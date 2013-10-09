@@ -255,23 +255,23 @@ public class RuleBasedSubstringMatcher implements SubstringMatcher {
      * Test program to output the sequence of collation element iterators for a given input string
      * @param args command line arguments (collationURI, test-string)
      */
-    public static void main(String[] args) {
-        Configuration config = new Configuration();
-        StringCollator collator = StandardCollationURIResolver.getInstance().resolve(args[0], args[0], config);
-        FastStringBuffer sb = new FastStringBuffer(100);
-        if (collator instanceof RuleBasedCollator) {
-            CollationElementIterator iter = ((RuleBasedCollator)collator).getCollationElementIterator(args[1]);
-            while (true) {
-                int e = iter.next();
-                if (e==-1) {
-                    break;
-                }
-                sb.append(e+" ");
-            }
-            System.err.println(sb.toString());
-        }
-
-    }
+//    public static void main(String[] args) {
+//        Configuration config = new Configuration();
+//        StringCollator collator = StandardCollationURIResolver.getInstance().resolve(args[0], args[0], config);
+//        FastStringBuffer sb = new FastStringBuffer(100);
+//        if (collator instanceof RuleBasedCollator) {
+//            CollationElementIterator iter = ((RuleBasedCollator)collator).getCollationElementIterator(args[1]);
+//            while (true) {
+//                int e = iter.next();
+//                if (e==-1) {
+//                    break;
+//                }
+//                sb.append(e+" ");
+//            }
+//            System.err.println(sb.toString());
+//        }
+//
+//    }
 
 
 }

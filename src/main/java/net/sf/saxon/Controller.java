@@ -433,14 +433,14 @@ public class Controller extends Transformer {
     public String getCookedBaseOutputURI() {
         if (cookedPrincipalResultURI == null) {
             String base = getBaseOutputURI();
-            if (base == null && config.isAllowExternalFunctions()) {
-                // if calling external functions is allowed, then the stylesheet is trusted, so
-                // we allow it to write to files relative to the current directory
-                base = new File(System.getProperty("user.dir")).toURI().toString();
-            }
-            if (base != null) {
-                base = EscapeURI.iriToUri(base).toString();
-            }
+//            if (base == null && config.isAllowExternalFunctions()) {
+//                // if calling external functions is allowed, then the stylesheet is trusted, so
+//                // we allow it to write to files relative to the current directory
+//                base = new File(System.getProperty("user.dir")).toURI().toString();
+//            }
+//            if (base != null) {
+//                base = EscapeURI.iriToUri(base).toString();
+//            }
             cookedPrincipalResultURI = base;
         }
         return cookedPrincipalResultURI;

@@ -6,6 +6,8 @@ import net.sf.saxon.om.UnfailingIterator;
 import net.sf.saxon.trans.XPathException;
 import net.sf.saxon.value.DoubleValue;
 
+import java.security.SecureRandom;
+
 /**
  * This class implements extension functions in the
  * http://exslt.org/random namespace.
@@ -15,7 +17,7 @@ import net.sf.saxon.value.DoubleValue;
  * Rewritten by Michael Kay to generate a SequenceIterator
  */
 public abstract class Random {
-
+    private static final SecureRandom random = new SecureRandom();
 	/**
 	 * Returns a sequence of random numbers
 	 * between 0 and 1.
@@ -87,7 +89,7 @@ public abstract class Random {
                 position = -1;
                 return null;
             } else {
-                current = new DoubleValue(generator.nextDouble());
+                current = new DoubleValue(random.nextDouble());
                 return current;
             }
         }

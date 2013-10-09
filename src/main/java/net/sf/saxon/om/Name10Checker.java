@@ -76,9 +76,9 @@ public final class Name10Checker extends NameChecker {
         return "1.0";
     }
 
-    public static void main(String[] args) {
-        System.err.println(new Name10Checker().isValidNCName("a:b"));
-    }
+//    public static void main(String[] args) {
+//        System.err.println(new Name10Checker().isValidNCName("a:b"));
+//    }
 }
 
 //

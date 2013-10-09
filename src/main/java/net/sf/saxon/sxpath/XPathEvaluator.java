@@ -239,32 +239,32 @@ public class XPathEvaluator {
      * For testing only
      */
 
-    public static void main(String[] args) throws Exception {
-        XPathEvaluator xpe = new XPathEvaluator();
-//        XPathVariable in = xpe.declareVariable("", "in");
-        XPathExpression exp = xpe.createExpression(
-                "for $v in distinct-values(tokenize($in, '/')) return concat(' +', $v)");
-        NodeInfo doc = xpe.getConfiguration().buildDocument(new StreamSource(new File(args[0])));
-        XPathDynamicContext context = exp.createDynamicContext(doc);
-        //context.setVariable(in, new StringValue(args[1]));
-        SequenceIterator results = exp.iterate(context);
-        while (true) {
-            Item item = results.next();
-            if (item == null) break;
-            System.err.println(item);
-        }
-//        if (args.length != 2) {
-//            System.err.println("format: java XPathEvaluator source.xml \"expression\"");
-//            return;
-//        }
+//    public static void main(String[] args) throws Exception {
 //        XPathEvaluator xpe = new XPathEvaluator();
-//        XPathExpression exp = xpe.createExpression(args[1]);
-//        List results = exp.evaluate(new StreamSource(new File(args[0])));
-//        for (int i = 0; i < results.size(); i++) {
-//            Object o = results.get(i);
-//            System.err.println(o);
+////        XPathVariable in = xpe.declareVariable("", "in");
+//        XPathExpression exp = xpe.createExpression(
+//                "for $v in distinct-values(tokenize($in, '/')) return concat(' +', $v)");
+//        NodeInfo doc = xpe.getConfiguration().buildDocument(new StreamSource(new File(args[0])));
+//        XPathDynamicContext context = exp.createDynamicContext(doc);
+//        //context.setVariable(in, new StringValue(args[1]));
+//        SequenceIterator results = exp.iterate(context);
+//        while (true) {
+//            Item item = results.next();
+//            if (item == null) break;
+//            System.err.println(item);
 //        }
-    }
+////        if (args.length != 2) {
+////            System.err.println("format: java XPathEvaluator source.xml \"expression\"");
+////            return;
+////        }
+////        XPathEvaluator xpe = new XPathEvaluator();
+////        XPathExpression exp = xpe.createExpression(args[1]);
+////        List results = exp.evaluate(new StreamSource(new File(args[0])));
+////        for (int i = 0; i < results.size(); i++) {
+////            Object o = results.get(i);
+////            System.err.println(o);
+////        }
+//    }
 
 }
 

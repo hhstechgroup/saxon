@@ -36,12 +36,12 @@ public class Compile {
      * @exception java.lang.Exception Any compilation error occurs
      */
 
-    public static void main (String args[])
-        throws java.lang.Exception
-    {
-        // the real work is delegated to another routine so that it can be used in a subclass
-        (new Compile()).doMain(args);
-    }
+//    public static void main (String args[])
+//        throws java.lang.Exception
+//    {
+//        // the real work is delegated to another routine so that it can be used in a subclass
+//        (new Compile()).doMain(args);
+//    }
 
     /**
      * Support method for main program. This support method can also be invoked from subclasses
@@ -50,143 +50,143 @@ public class Compile {
      * @param args the command-line arguments
      */
 
-    protected void doMain(String args[]) {
-
-        String styleFileName;
-        boolean useURLs = false;
-        String outputFileName;
-
-				// Check the command-line arguments.
-
-        try {
-            int i = 0;
-            while (true) {
-                if (i>=args.length) badUsage("No stylesheet file name");
-
-                if (args[i].charAt(0)=='-') {
-
-                    if (args[i].equals("-u")) {
-                        useURLs = true;
-                        i++;
-                    }
-
-                    else if (args[i].equals("-t")) {
-                        System.err.println(factory.getConfiguration().getProductTitle());
-                        //System.err.println("Java version " + System.getProperty("java.version"));
-                        System.err.println(Configuration.getPlatform().getPlatformVersion());
-                        factory.setAttribute(
-                            FeatureKeys.TIMING,
-                            Boolean.TRUE);
-
-                        //Loader.setTracing(true);
-                        showTime = true;
-                        i++;
-                    }
-
-                    else if (args[i].equals("-y")) {
-                        i++;
-                        if (args.length < i+2) badUsage("No style parser class");
-                        String styleParserName = args[i++];
-                        factory.setAttribute(
-                                FeatureKeys.STYLE_PARSER_CLASS,
-                                styleParserName);
-                    }
-
-                    else if (args[i].equals("-r")) {
-                        i++;
-                        if (args.length < i+2) badUsage("No URIResolver class");
-                        String r = args[i++];
-                        factory.setURIResolver(factory.getConfiguration().makeURIResolver(r));
-                    }
-
-                    else if (args[i].equals("-debug")) {
-                        i++;
-                        debug = true;
-                    }
-
-                    else if (args[i].equals("-1.1")) {    // XML 1.1
-                        i++;
-                        factory.setAttribute(FeatureKeys.XML_VERSION, "1.1");
-                    }
-
-                    else badUsage("Unknown option " + args[i]);
-                }
-
-                else break;
-            }
-
-            if (args.length < i+1 ) badUsage("No stylesheet file name");
-            styleFileName = args[i++];
-
-            if (args.length < i+1 ) badUsage("No output file name");
-            outputFileName = args[i++];
-
-
-            long startTime = (new Date()).getTime();
-
-            Source styleSource;
-            if (useURLs || styleFileName.startsWith("http:")
-                             || styleFileName.startsWith("file:")) {
-                styleSource = factory.getURIResolver().resolve(styleFileName, null);
-                if (styleSource == null) {
-                    styleSource = factory.getConfiguration().getSystemURIResolver().resolve(styleFileName, null);
-                }
-
-            } else {
-                File sheetFile = new File(styleFileName);
-                if (!sheetFile.exists()) {
-                    quit("Stylesheet file " + sheetFile + " does not exist", 2);
-                }
-                InputSource eis = new InputSource(sheetFile.toURI().toString());
-                styleSource = new SAXSource(factory.getConfiguration().getStyleParser(), eis);
-            }
-
-            if (styleSource==null) {
-                quit("URIResolver for stylesheet file must return a Source", 2);
-            }
-
-            Templates sheet = factory.newTemplates(styleSource);
-
-            if (showTime) {
-                long endTime = (new Date()).getTime();
-                System.err.println("Stylesheet compilation time: " + (endTime-startTime) + " milliseconds");
-            }
-
-            try {
-                String msg = ((PreparedStylesheet)sheet).getExecutable().getReasonUnableToCompile();
-                if (msg != null) {
-                    System.err.println(msg);
-                    quit("Unable to compile stylesheet", 2);
-                }
-                System.err.println("Serializing compiled stylesheet");
-                ((PreparedStylesheet)sheet).setTargetNamePool(
-                        ((PreparedStylesheet)sheet).getConfiguration().getNamePool());
-                OutputStream fos = new FileOutputStream(outputFileName);
-                if (debug) {
-                    fos = new TracingObjectOutputStream(fos);
-                }
-                ObjectOutputStream oos = new ObjectOutputStream(fos);
-                //noinspection RedundantCast
-                oos.writeObject((PreparedStylesheet)sheet);
-                oos.close();
-                System.err.println("Finished serializing stylesheet");
-            } catch (Exception err) {
-                err.printStackTrace();
-            }
-
-        } catch (TerminationException err) {
-            quit(err.getMessage(), 1);
-        } catch (XPathException err) {
-            quit("Stylesheet compilation failed: " + err.getMessage(), 2);
-        } catch (TransformerConfigurationException err) {
-            quit("Stylesheet compilation failed: " + err.getMessage(), 2);
-        } catch (TransformerFactoryConfigurationError err) {
-            quit("Stylesheet compilation failed: " + err.getMessage(), 2);
-        } catch (Exception err2) {
-            err2.printStackTrace();
-        }
-
-    }
+//    protected void doMain(String args[]) {
+//
+//        String styleFileName;
+//        boolean useURLs = false;
+//        String outputFileName;
+//
+//				// Check the command-line arguments.
+//
+//        try {
+//            int i = 0;
+//            while (true) {
+//                if (i>=args.length) badUsage("No stylesheet file name");
+//
+//                if (args[i].charAt(0)=='-') {
+//
+//                    if (args[i].equals("-u")) {
+//                        useURLs = true;
+//                        i++;
+//                    }
+//
+//                    else if (args[i].equals("-t")) {
+//                        System.err.println(factory.getConfiguration().getProductTitle());
+//                        //System.err.println("Java version " + System.getProperty("java.version"));
+//                        System.err.println(Configuration.getPlatform().getPlatformVersion());
+//                        factory.setAttribute(
+//                            FeatureKeys.TIMING,
+//                            Boolean.TRUE);
+//
+//                        //Loader.setTracing(true);
+//                        showTime = true;
+//                        i++;
+//                    }
+//
+//                    else if (args[i].equals("-y")) {
+//                        i++;
+//                        if (args.length < i+2) badUsage("No style parser class");
+//                        String styleParserName = args[i++];
+//                        factory.setAttribute(
+//                                FeatureKeys.STYLE_PARSER_CLASS,
+//                                styleParserName);
+//                    }
+//
+//                    else if (args[i].equals("-r")) {
+//                        i++;
+//                        if (args.length < i+2) badUsage("No URIResolver class");
+//                        String r = args[i++];
+//                        factory.setURIResolver(factory.getConfiguration().makeURIResolver(r));
+//                    }
+//
+//                    else if (args[i].equals("-debug")) {
+//                        i++;
+//                        debug = true;
+//                    }
+//
+//                    else if (args[i].equals("-1.1")) {    // XML 1.1
+//                        i++;
+//                        factory.setAttribute(FeatureKeys.XML_VERSION, "1.1");
+//                    }
+//
+//                    else badUsage("Unknown option " + args[i]);
+//                }
+//
+//                else break;
+//            }
+//
+//            if (args.length < i+1 ) badUsage("No stylesheet file name");
+//            styleFileName = args[i++];
+//
+//            if (args.length < i+1 ) badUsage("No output file name");
+//            outputFileName = args[i++];
+//
+//
+//            long startTime = (new Date()).getTime();
+//
+//            Source styleSource;
+//            if (useURLs || styleFileName.startsWith("http:")
+//                             || styleFileName.startsWith("file:")) {
+//                styleSource = factory.getURIResolver().resolve(styleFileName, null);
+//                if (styleSource == null) {
+//                    styleSource = factory.getConfiguration().getSystemURIResolver().resolve(styleFileName, null);
+//                }
+//
+//            } else {
+//                File sheetFile = new File(styleFileName);
+//                if (!sheetFile.exists()) {
+//                    quit("Stylesheet file " + sheetFile + " does not exist", 2);
+//                }
+//                InputSource eis = new InputSource(sheetFile.toURI().toString());
+//                styleSource = new SAXSource(factory.getConfiguration().getStyleParser(), eis);
+//            }
+//
+//            if (styleSource==null) {
+//                quit("URIResolver for stylesheet file must return a Source", 2);
+//            }
+//
+//            Templates sheet = factory.newTemplates(styleSource);
+//
+//            if (showTime) {
+//                long endTime = (new Date()).getTime();
+//                System.err.println("Stylesheet compilation time: " + (endTime-startTime) + " milliseconds");
+//            }
+//
+//            try {
+//                String msg = ((PreparedStylesheet)sheet).getExecutable().getReasonUnableToCompile();
+//                if (msg != null) {
+//                    System.err.println(msg);
+//                    quit("Unable to compile stylesheet", 2);
+//                }
+//                System.err.println("Serializing compiled stylesheet");
+//                ((PreparedStylesheet)sheet).setTargetNamePool(
+//                        ((PreparedStylesheet)sheet).getConfiguration().getNamePool());
+//                OutputStream fos = new FileOutputStream(outputFileName);
+//                if (debug) {
+//                    fos = new TracingObjectOutputStream(fos);
+//                }
+//                ObjectOutputStream oos = new ObjectOutputStream(fos);
+//                //noinspection RedundantCast
+//                oos.writeObject((PreparedStylesheet)sheet);
+//                oos.close();
+//                System.err.println("Finished serializing stylesheet");
+//            } catch (Exception err) {
+//                err.printStackTrace();
+//            }
+//
+//        } catch (TerminationException err) {
+//            quit(err.getMessage(), 1);
+//        } catch (XPathException err) {
+//            quit("Stylesheet compilation failed: " + err.getMessage(), 2);
+//        } catch (TransformerConfigurationException err) {
+//            quit("Stylesheet compilation failed: " + err.getMessage(), 2);
+//        } catch (TransformerFactoryConfigurationError err) {
+//            quit("Stylesheet compilation failed: " + err.getMessage(), 2);
+//        } catch (Exception err2) {
+//            err2.printStackTrace();
+//        }
+//
+//    }
 
     /**
      * Exit with a message
@@ -195,30 +195,30 @@ public class Compile {
      * @param code Result code to be returned to the operating system
      */
 
-    protected static void quit(String message, int code) {
-        System.err.println(message);
-        System.exit(code);
-    }
-
-
-    /** Output error message when incorrect command line options/arguments are used
-     *
-     * @param message Error message to be displayed
-     */
-    protected void badUsage(String message) {
-        System.err.println(message);
-        System.err.println(factory.getConfiguration().getProductTitle());
-        System.err.println("Usage: java net.sf.saxon.Compile [options] stylesheet-file output-file");
-        System.err.println("Options: ");
-        System.err.println("  -r classname    Use specified URIResolver class");
-        System.err.println("  -t              Display version and timing information");
-        System.err.println("  -u              Names are URLs not filenames");
-        System.err.println("  -y classname    Use specified SAX parser for stylesheet");
-        System.err.println("  -debug          Produce trace output to diagnose failures");
-        System.err.println("  -1.1            Allow XML 1.1 documents");
-        System.err.println("  -?              Display this message ");
-        System.exit(2);
-    }
+//    protected static void quit(String message, int code) {
+//        System.err.println(message);
+//        System.exit(code);
+//    }
+//
+//
+//    /** Output error message when incorrect command line options/arguments are used
+//     *
+//     * @param message Error message to be displayed
+//     */
+//    protected void badUsage(String message) {
+//        System.err.println(message);
+//        System.err.println(factory.getConfiguration().getProductTitle());
+//        System.err.println("Usage: java net.sf.saxon.Compile [options] stylesheet-file output-file");
+//        System.err.println("Options: ");
+//        System.err.println("  -r classname    Use specified URIResolver class");
+//        System.err.println("  -t              Display version and timing information");
+//        System.err.println("  -u              Names are URLs not filenames");
+//        System.err.println("  -y classname    Use specified SAX parser for stylesheet");
+//        System.err.println("  -debug          Produce trace output to diagnose failures");
+//        System.err.println("  -1.1            Allow XML 1.1 documents");
+//        System.err.println("  -?              Display this message ");
+//        System.exit(2);
+//    }
 
     /**
      * Tracing version of ObjectOutputStream for diagnostics

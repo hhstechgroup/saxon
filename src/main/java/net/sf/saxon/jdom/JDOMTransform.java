@@ -56,9 +56,9 @@ public class JDOMTransform extends Transform {
         }
     }
 
-    public static void main(String[] args) {
-        new JDOMTransform().doTransform(args, "JDOMTransform");
-    }
+//    public static void main(String[] args) {
+//        new JDOMTransform().doTransform(args, "JDOMTransform");
+//    }
 }
 
 //

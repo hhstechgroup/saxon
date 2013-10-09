@@ -214,21 +214,21 @@ public class SequenceComposer implements SequenceIterator {
      * @throws Exception
      */
 
-    public static void main(String[] args) throws Exception {
-        Configuration config = new Configuration();
-        DocumentInfo doc = config.buildDocument(new StreamSource(new File("c:/MyJava/samples/data/books.xml")));
-        PipelineConfiguration pipe = config.makePipelineConfiguration();
-        pipe.setHostLanguage(Configuration.XQUERY);
-        EventIterator e = new Decomposer(new SingletonEventIterator(doc), pipe);
-        SequenceIterator iter = new SequenceComposer(e, pipe);
-        while (true) {
-            NodeInfo item = (NodeInfo)iter.next();
-            if (item == null) {
-                break;
-            }
-            System.out.println(QueryResult.serialize(item));
-        }
-    }
+//    public static void main(String[] args) throws Exception {
+//        Configuration config = new Configuration();
+//        DocumentInfo doc = config.buildDocument(new StreamSource(new File("c:/MyJava/samples/data/books.xml")));
+//        PipelineConfiguration pipe = config.makePipelineConfiguration();
+//        pipe.setHostLanguage(Configuration.XQUERY);
+//        EventIterator e = new Decomposer(new SingletonEventIterator(doc), pipe);
+//        SequenceIterator iter = new SequenceComposer(e, pipe);
+//        while (true) {
+//            NodeInfo item = (NodeInfo)iter.next();
+//            if (item == null) {
+//                break;
+//            }
+//            System.out.println(QueryResult.serialize(item));
+//        }
+//    }
 }
 
 //

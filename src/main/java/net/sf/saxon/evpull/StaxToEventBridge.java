@@ -489,28 +489,28 @@ public class StaxToEventBridge implements EventIterator, SaxonLocator, SourceLoc
      * @param args command line arguments
      */
 
-    public static void main(String[] args) throws Exception {
-        for (int i=0; i<1; i++) {
-            long startTime = System.currentTimeMillis();
-            PipelineConfiguration pipe = new Configuration().makePipelineConfiguration();
-            StaxToEventBridge puller = new StaxToEventBridge();
-            File f = new File(args[0]);
-            puller.setInputStream(f.toURI().toString(), new FileInputStream(f));
-            puller.setPipelineConfiguration(pipe);
-            XMLEmitter emitter = new XMLEmitter();
-            emitter.setPipelineConfiguration(pipe);
-            emitter.setOutputProperties(new Properties());
-            if (args.length > 1) {
-                emitter.setOutputStream(new FileOutputStream(args[1]));
-            } else {
-                emitter.setOutputStream(System.out);
-            }
-            NamespaceReducer r = new NamespaceReducer(emitter);
-
-            EventIteratorToReceiver.copy(puller, r);
-            System.err.println("Elapsed time: " + (System.currentTimeMillis() - startTime) + "ms");
-        }
-    }
+//    public static void main(String[] args) throws Exception {
+//        for (int i=0; i<1; i++) {
+//            long startTime = System.currentTimeMillis();
+//            PipelineConfiguration pipe = new Configuration().makePipelineConfiguration();
+//            StaxToEventBridge puller = new StaxToEventBridge();
+//            File f = new File(args[0]);
+//            puller.setInputStream(f.toURI().toString(), new FileInputStream(f));
+//            puller.setPipelineConfiguration(pipe);
+//            XMLEmitter emitter = new XMLEmitter();
+//            emitter.setPipelineConfiguration(pipe);
+//            emitter.setOutputProperties(new Properties());
+//            if (args.length > 1) {
+//                emitter.setOutputStream(new FileOutputStream(args[1]));
+//            } else {
+//                emitter.setOutputStream(System.out);
+//            }
+//            NamespaceReducer r = new NamespaceReducer(emitter);
+//
+//            EventIteratorToReceiver.copy(puller, r);
+//            System.err.println("Elapsed time: " + (System.currentTimeMillis() - startTime) + "ms");
+//        }
+//    }
 
 
     /**

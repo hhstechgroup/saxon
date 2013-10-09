@@ -106,21 +106,21 @@ public class PullEventTracer implements EventIterator {
      * @throws Exception
      */
 
-    public static void main(String[] args) throws Exception {
-        Configuration config = new Configuration();
-        DocumentInfo doc = config.buildDocument(new StreamSource(new File("c:/MyJava/samples/data/books.xml")));
-        PipelineConfiguration pipe = config.makePipelineConfiguration();
-        pipe.setHostLanguage(Configuration.XQUERY);
-        EventIterator e = new Decomposer(new SingletonEventIterator(doc), pipe);
-        e = EventStackIterator.flatten(e);
-        e = new PullEventTracer(e, config);
-        while (true) {
-            PullEvent pe = e.next();
-            if (pe == null) {
-                break;
-            }
-        }
-    }
+//    public static void main(String[] args) throws Exception {
+//        Configuration config = new Configuration();
+//        DocumentInfo doc = config.buildDocument(new StreamSource(new File("c:/MyJava/samples/data/books.xml")));
+//        PipelineConfiguration pipe = config.makePipelineConfiguration();
+//        pipe.setHostLanguage(Configuration.XQUERY);
+//        EventIterator e = new Decomposer(new SingletonEventIterator(doc), pipe);
+//        e = EventStackIterator.flatten(e);
+//        e = new PullEventTracer(e, config);
+//        while (true) {
+//            PullEvent pe = e.next();
+//            if (pe == null) {
+//                break;
+//            }
+//        }
+//    }
 }
 
 //

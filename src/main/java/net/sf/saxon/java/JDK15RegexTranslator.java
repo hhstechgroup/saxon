@@ -941,16 +941,16 @@ public class JDK15RegexTranslator extends RegexTranslator {
      * @throws RegexSyntaxException
      */
 
-    public static void main(String[] args) throws RegexSyntaxException {
-        String s = translate(args[0], 11, args[1].equals("xpath"), false, true);
-        System.err.println(StringValue.diagnosticDisplay(s));
-        try {
-            Pattern.compile(s);
-        } catch (Exception err) {
-            System.err.println("Error: " + err.getMessage());
-        }
-        System.err.println();
-    }
+//    public static void main(String[] args) throws RegexSyntaxException {
+//        String s = translate(args[0], 11, args[1].equals("xpath"), false, true);
+//        System.err.println(StringValue.diagnosticDisplay(s));
+//        try {
+//            Pattern.compile(s);
+//        } catch (Exception err) {
+//            System.err.println("Error: " + err.getMessage());
+//        }
+//        System.err.println();
+//    }
 
 
 //}

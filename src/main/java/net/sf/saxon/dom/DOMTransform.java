@@ -52,9 +52,9 @@ public class DOMTransform extends Transform {
     }
     }
 
-    public static void main(String[] args) {
-        new DOMTransform().doTransform(args, "DOMTransform");
-    }
+//    public static void main(String[] args) {
+//        new DOMTransform().doTransform(args, "DOMTransform");
+//    }
 }
 //
 // The contents of this file are subject to the Mozilla Public License Version 1.0 (the "License");

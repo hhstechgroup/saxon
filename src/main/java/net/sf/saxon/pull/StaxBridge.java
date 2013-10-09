@@ -1057,29 +1057,29 @@ public class StaxBridge implements PullProvider, SaxonLocator, SourceLocationPro
      * @param args command line arguments
      */
 
-    public static void main(String[] args) throws Exception {
-        for (int i=0; i<1; i++) {
-            long startTime = System.currentTimeMillis();
-            PipelineConfiguration pipe = new Configuration().makePipelineConfiguration();
-            StaxBridge puller = new StaxBridge();
-            File f = new File(args[0]);
-            puller.setInputStream(f.toURI().toString(), new FileInputStream(f));
-            XMLEmitter emitter = new XMLEmitter();
-            emitter.setPipelineConfiguration(pipe);
-            emitter.setOutputProperties(new Properties());
-            if (args.length > 1) {
-                emitter.setOutputStream(new FileOutputStream(args[1]));
-            } else {
-                emitter.setOutputStream(System.out);
-            }
-            NamespaceReducer r = new NamespaceReducer();
-            r.setUnderlyingReceiver(emitter);
-            puller.setPipelineConfiguration(pipe);
-            r.setPipelineConfiguration(pipe);
-            new PullPushCopier(puller, r).copy();
-            System.err.println("Elapsed time: " + (System.currentTimeMillis() - startTime) + "ms");
-        }
-    }
+//    public static void main(String[] args) throws Exception {
+//        for (int i=0; i<1; i++) {
+//            long startTime = System.currentTimeMillis();
+//            PipelineConfiguration pipe = new Configuration().makePipelineConfiguration();
+//            StaxBridge puller = new StaxBridge();
+//            File f = new File(args[0]);
+//            puller.setInputStream(f.toURI().toString(), new FileInputStream(f));
+//            XMLEmitter emitter = new XMLEmitter();
+//            emitter.setPipelineConfiguration(pipe);
+//            emitter.setOutputProperties(new Properties());
+//            if (args.length > 1) {
+//                emitter.setOutputStream(new FileOutputStream(args[1]));
+//            } else {
+//                emitter.setOutputStream(System.out);
+//            }
+//            NamespaceReducer r = new NamespaceReducer();
+//            r.setUnderlyingReceiver(emitter);
+//            puller.setPipelineConfiguration(pipe);
+//            r.setPipelineConfiguration(pipe);
+//            new PullPushCopier(puller, r).copy();
+//            System.err.println("Elapsed time: " + (System.currentTimeMillis() - startTime) + "ms");
+//        }
+//    }
 }
 
 

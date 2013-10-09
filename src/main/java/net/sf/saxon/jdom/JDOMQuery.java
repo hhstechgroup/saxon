@@ -36,9 +36,9 @@ public class JDOMQuery extends Query {
         }
     }
 
-    public static void main(String[] args) {
-        new JDOMQuery().doQuery(args, "JDOMQuery");
-    }
+//    public static void main(String[] args) {
+//        new JDOMQuery().doQuery(args, "JDOMQuery");
+//    }
 }
 
 //

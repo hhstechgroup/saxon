@@ -207,27 +207,27 @@ public class UnparsedText extends SystemFunction implements XSLTFunction {
 
 // diagnostic method to output the octets of a file
 
-    public static void main(String[] args) throws Exception {
-        FastStringBuffer sb1 = new FastStringBuffer(100);
-        FastStringBuffer sb2 = new FastStringBuffer(100);
-        File file = new File(args[0]);
-        InputStream is = new FileInputStream(file);
-        while (true) {
-            int b = is.read();
-            if (b<0) {
-                System.out.println(sb1.toString());
-                System.out.println(sb2.toString()); break;
-            }
-            sb1.append(Integer.toHexString(b)+" ");
-            sb2.append((char)b + " ");
-            if (sb1.length() > 80) {
-                System.out.println(sb1.toString());
-                System.out.println(sb2.toString());
-                sb1 = new FastStringBuffer(100);
-                sb2 = new FastStringBuffer(100);
-            }
-        }
-    }
+//    public static void main(String[] args) throws Exception {
+//        FastStringBuffer sb1 = new FastStringBuffer(100);
+//        FastStringBuffer sb2 = new FastStringBuffer(100);
+//        File file = new File(args[0]);
+//        InputStream is = new FileInputStream(file);
+//        while (true) {
+//            int b = is.read();
+//            if (b<0) {
+//                System.out.println(sb1.toString());
+//                System.out.println(sb2.toString()); break;
+//            }
+//            sb1.append(Integer.toHexString(b)+" ");
+//            sb2.append((char)b + " ");
+//            if (sb1.length() > 80) {
+//                System.out.println(sb1.toString());
+//                System.out.println(sb2.toString());
+//                sb1 = new FastStringBuffer(100);
+//                sb2 = new FastStringBuffer(100);
+//            }
+//        }
+//    }
 
 }
 

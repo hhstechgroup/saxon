@@ -255,11 +255,11 @@ public class PreparedStylesheet implements Templates, Serializable {
      * @return the PreparedStylesheet, which can be used in JAXP interfaces as the Templates object
      */
 
-    public static PreparedStylesheet loadCompiledStylesheet(Configuration config, String fileName)
-            throws IOException, ClassNotFoundException {
-        ObjectInputStream ois = new ObjectInputStream(new FileInputStream(fileName));
-        return loadCompiledStylesheet(config, ois);
-    }
+//    public static PreparedStylesheet loadCompiledStylesheet(Configuration config, String fileName)
+//            throws IOException, ClassNotFoundException {
+//        ObjectInputStream ois = new ObjectInputStream(new FileInputStream(fileName));
+//        return loadCompiledStylesheet(config, ois);
+//    }
 
     /**
      * Load a PreparedStylesheet from a compiled stylesheet stored in a file.

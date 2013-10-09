@@ -517,30 +517,30 @@ public class TinyTreeWalker implements PullProvider, SourceLocator {
         return null;
     }
 
-  public static void main(String[] args) throws Exception {
-
-    Controller controller = new Controller(new Configuration());
-    TinyBuilder tb = (TinyBuilder)controller.makeBuilder();
-    tb.open();
-    NamePool p = tb.getConfiguration().getNamePool();
-    int code = p.allocate("a", "b", "c");
-    tb.startElement(code, -1, -1, -1);
-    tb.endElement();
-    tb.startDocument(-1);
-    tb.startElement(code, -1, -1, -1);
-    tb.endElement();
-    tb.endDocument();
-    tb.close();
-    TinyTree tt = tb.getTree();
-    NodeInfo node = tb.getCurrentRoot();
-
-    TinyTreeWalker walker = new TinyTreeWalker((TinyNodeImpl)node);
-    System.out.println(walker.next());
-    System.out.println(walker.next());
-    System.out.println(walker.next());
-    System.out.println(walker.next());
-    System.out.println(walker.next());
-  }
+//  public static void main(String[] args) throws Exception {
+//
+//    Controller controller = new Controller(new Configuration());
+//    TinyBuilder tb = (TinyBuilder)controller.makeBuilder();
+//    tb.open();
+//    NamePool p = tb.getConfiguration().getNamePool();
+//    int code = p.allocate("a", "b", "c");
+//    tb.startElement(code, -1, -1, -1);
+//    tb.endElement();
+//    tb.startDocument(-1);
+//    tb.startElement(code, -1, -1, -1);
+//    tb.endElement();
+//    tb.endDocument();
+//    tb.close();
+//    TinyTree tt = tb.getTree();
+//    NodeInfo node = tb.getCurrentRoot();
+//
+//    TinyTreeWalker walker = new TinyTreeWalker((TinyNodeImpl)node);
+//    System.out.println(walker.next());
+//    System.out.println(walker.next());
+//    System.out.println(walker.next());
+//    System.out.println(walker.next());
+//    System.out.println(walker.next());
+//  }
 }
 
 //

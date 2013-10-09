@@ -153,15 +153,15 @@ public class Tokenize extends SystemFunction  {
      * @throws Exception
      */
 
-    public static void main(String[] args) throws Exception {
-        String in = args[0];
-        String[] out = Pattern.compile(args[1]).split(in, 0);
-        System.out.println("results");
-        for (int i=0; i<out.length; i++) {
-            System.out.println('[' + out[i] + ']');
-        }
-        System.out.println("end results");
-    }
+//    public static void main(String[] args) throws Exception {
+//        String in = args[0];
+//        String[] out = Pattern.compile(args[1]).split(in, 0);
+//        System.out.println("results");
+//        for (int i=0; i<out.length; i++) {
+//            System.out.println('[' + out[i] + ']');
+//        }
+//        System.out.println("end results");
+//    }
 
 
 

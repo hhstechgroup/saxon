@@ -199,14 +199,14 @@ public class CharacterSetFactory {
      * @param args command line arguments
      */
 
-    public static void main(String[] args) throws Exception {
-        System.err.println("Available Character Sets in the java.nio package for this Java VM:");
-        Iterator iter = Charset.availableCharsets().keySet().iterator();
-        while (iter.hasNext()) {
-            String s = (String) iter.next();
-            System.err.println(s);
-        }
-    }
+//    public static void main(String[] args) throws Exception {
+//        System.err.println("Available Character Sets in the java.nio package for this Java VM:");
+//        Iterator iter = Charset.availableCharsets().keySet().iterator();
+//        while (iter.hasNext()) {
+//            String s = (String) iter.next();
+//            System.err.println(s);
+//        }
+//    }
 }
 
 //

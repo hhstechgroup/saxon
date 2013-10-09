@@ -843,10 +843,10 @@ public class JDK14RegexTranslator extends SurrogateRegexTranslator {
      * @throws RegexSyntaxException
      */
 
-    public static void main(String[] args) throws RegexSyntaxException {
-        String s = new JDK14RegexTranslator().translate(args[0], Configuration.XML11, args[1].equals("xpath"));
-        System.err.println(StringValue.diagnosticDisplay(s));
-    }
+//    public static void main(String[] args) throws RegexSyntaxException {
+//        String s = new JDK14RegexTranslator().translate(args[0], Configuration.XML11, args[1].equals("xpath"));
+//        System.err.println(StringValue.diagnosticDisplay(s));
+//    }
 
     //}
 

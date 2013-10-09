@@ -154,17 +154,17 @@ public class SaxonCollation extends StyleElement {
      * @param args not used
     */
 
-    public static void main(String[] args) {
-        System.err.println("The following locales have collations available:");
-        Locale[] loc = Collator.getAvailableLocales();
-        for (int i=0; i<loc.length; i++) {
-            Locale l=loc[i];
-            System.err.println("Locale:" +
-              ("".equals(l.getCountry()) ? "" : " country='" + l.getCountry() + "' (" + l.getDisplayCountry() + ')' ) +
-              ("".equals(l.getLanguage()) ? "" : " language='" + l.getLanguage() + "' (" + l.getDisplayLanguage() + ')' ) +
-              ("".equals(l.getVariant()) ? "" : " variant='" + l.getVariant() + "' (" + l.getDisplayVariant() + ')' ));
-        }
-    }
+//    public static void main(String[] args) {
+//        System.err.println("The following locales have collations available:");
+//        Locale[] loc = Collator.getAvailableLocales();
+//        for (int i=0; i<loc.length; i++) {
+//            Locale l=loc[i];
+//            System.err.println("Locale:" +
+//              ("".equals(l.getCountry()) ? "" : " country='" + l.getCountry() + "' (" + l.getDisplayCountry() + ')' ) +
+//              ("".equals(l.getLanguage()) ? "" : " language='" + l.getLanguage() + "' (" + l.getDisplayLanguage() + ')' ) +
+//              ("".equals(l.getVariant()) ? "" : " variant='" + l.getVariant() + "' (" + l.getDisplayVariant() + ')' ));
+//        }
+//    }
 
 }
 

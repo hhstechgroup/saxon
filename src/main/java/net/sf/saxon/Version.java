@@ -95,9 +95,9 @@ public final class Version {
      * Invoking net.sf.saxon.Version from the command line outputs the build number
      * @param args not used
      */
-    public static void main(String[] args) {
-        System.err.println(getProductTitle() + " (build " + BUILD + ')');
-    }
+//    public static void main(String[] args) {
+//        System.err.println(getProductTitle() + " (build " + BUILD + ')');
+//    }
 }
 
 

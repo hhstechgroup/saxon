@@ -555,40 +555,40 @@ public class XPathEvaluator implements XPath {
      * parameter is the XPath expression.
      */
 
-    public static void main(String[] args) throws Exception {
-        if (args.length != 2) {
-            System.err.println("format: java XPathEvaluator source.xml \"expression\"");
-            return;
-        }
-        XPathEvaluator xpe = new XPathEvaluator();
-        List results = (List)xpe.evaluate(args[1], new StreamSource(new File(args[0])), XPathConstants.NODESET);
-        for (int i = 0; i < results.size(); i++) {
-            Object o = results.get(i);
-            System.err.println(o);
-        }
-
-
-//        Configuration config = new Configuration();
-//        config.setLineNumbering(true);
-//        XPathEvaluator xpath = new XPathEvaluator(config);
-//        xpath.setXPathVariableResolver(
-//                new XPathVariableResolver() {
-//                    public Object resolveVariable(QName variableName) {
-//                        if (variableName.getLocalPart().equals("in")) {
-//                            return "a/b/c/a";
-//                        }
-//                        return null;
-//                    }
-//                }
-//        );
-//        NodeInfo doca = xpath.setSource(new StreamSource((new File(args[0]))));
-//        List list = xpath.evaluate("for $v in distinct-values(tokenize($in, '/')) return concat(' +', $v)");
-//        for (int i=0; i<list.size(); i++) {
-//            String s = (String)list.get(i);
-//            System.out.println(s);
+//    public static void main(String[] args) throws Exception {
+//        if (args.length != 2) {
+//            System.err.println("format: java XPathEvaluator source.xml \"expression\"");
+//            return;
 //        }
-
-    }
+//        XPathEvaluator xpe = new XPathEvaluator();
+//        List results = (List)xpe.evaluate(args[1], new StreamSource(new File(args[0])), XPathConstants.NODESET);
+//        for (int i = 0; i < results.size(); i++) {
+//            Object o = results.get(i);
+//            System.err.println(o);
+//        }
+//
+//
+////        Configuration config = new Configuration();
+////        config.setLineNumbering(true);
+////        XPathEvaluator xpath = new XPathEvaluator(config);
+////        xpath.setXPathVariableResolver(
+////                new XPathVariableResolver() {
+////                    public Object resolveVariable(QName variableName) {
+////                        if (variableName.getLocalPart().equals("in")) {
+////                            return "a/b/c/a";
+////                        }
+////                        return null;
+////                    }
+////                }
+////        );
+////        NodeInfo doca = xpath.setSource(new StreamSource((new File(args[0]))));
+////        List list = xpath.evaluate("for $v in distinct-values(tokenize($in, '/')) return concat(' +', $v)");
+////        for (int i=0; i<list.size(); i++) {
+////            String s = (String)list.get(i);
+////            System.out.println(s);
+////        }
+//
+//    }
 
 }
 

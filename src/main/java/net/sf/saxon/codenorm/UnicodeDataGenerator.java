@@ -27,7 +27,7 @@ import java.util.List;
  * @author Michael Kay: Saxon modifications.
  */
 class UnicodeDataGenerator {
-    static final String copyright = "Copyright © 1998-1999 Unicode, Inc.";
+    static final String copyright = "Copyright ï¿½ 1998-1999 Unicode, Inc.";
 
     /**
      * Testing flags
@@ -428,15 +428,15 @@ class UnicodeDataGenerator {
      * Unicode character database.
      */
 
-    public static void main(String[] args) throws Exception {
-        if (args.length != 2) {
-            System.err.println("Usage: java UnicodeDataGenerator dir UnicodeData.java");
-            System.err.println("where dir is the directory containing the files UnicodeData.text and" +
-                    " CompositionExclusions.txt from the Unicode character database");
-        }
-        dir = args[0];
-        build();
-        PrintStream o = new PrintStream(new FileOutputStream(new File(args[1])));
-        generateJava(o);
-    }
+//    public static void main(String[] args) throws Exception {
+//        if (args.length != 2) {
+//            System.err.println("Usage: java UnicodeDataGenerator dir UnicodeData.java");
+//            System.err.println("where dir is the directory containing the files UnicodeData.text and" +
+//                    " CompositionExclusions.txt from the Unicode character database");
+//        }
+//        dir = args[0];
+//        build();
+//        PrintStream o = new PrintStream(new FileOutputStream(new File(args[1])));
+//        generateJava(o);
+//    }
 }

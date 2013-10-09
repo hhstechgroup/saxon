@@ -8,6 +8,7 @@ import net.sf.saxon.value.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 
 /**
@@ -16,6 +17,7 @@ import java.util.ArrayList;
 */
 
 public abstract class Math  {
+    private static final SecureRandom random = new SecureRandom();
 
     /**
     * Get the maximum numeric value of the string-value of each of a set of nodes
@@ -241,7 +243,7 @@ public abstract class Math  {
     */
 
     public static double random() {
-        return java.lang.Math.random();
+        return random.nextDouble();
     }
 
     /**

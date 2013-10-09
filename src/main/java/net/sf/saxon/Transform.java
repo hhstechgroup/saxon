@@ -60,11 +60,11 @@ public class Transform {
      *                             run-time error occurred
      */
 
-    public static void main(String args[])
-            throws java.lang.Exception {
-        // the real work is delegated to another routine so that it can be used in a subclass
-        (new Transform()).doTransform(args, "java net.sf.saxon.Transform");
-    }
+//    public static void main(String args[])
+//            throws java.lang.Exception {
+//        // the real work is delegated to another routine so that it can be used in a subclass
+//        (new Transform()).doTransform(args, "java net.sf.saxon.Transform");
+//    }
 
     /**
      * Set the configuration in the TransformerFactory. This is designed to be
@@ -93,656 +93,656 @@ public class Transform {
      * @param command the form of the command as written by the user, to be used in error messages
      */
 
-    public void doTransform(String args[], String command) {
-
-
-        String sourceFileName = null;
-        String styleFileName = null;
-        File outputFile = null;
-        ArrayList parameterList = new ArrayList(20);
-        String outputFileName = null;
-        String initialMode = null;
-        String initialTemplate = null;
-        boolean useAssociatedStylesheet = false;
-        boolean wholeDirectory = false;
-        boolean precompiled = false;
-        boolean dtdValidation = false;
-        String styleParserName = null;
-        boolean explain = false;
-        String explainOutputFileName = null;
-        String additionalSchemas = null;
-        PrintStream traceDestination = System.err;
-        boolean closeTraceDestination = false;
-
-        boolean schemaAware = false;
-        for (int i=0; i<args.length; i++) {
-            if (args[i].equals("-sa") ||
-                    args[i].startsWith("-sa:") ||
-                    args[i].startsWith("-val:") ||
-                    args[i].equals("-val") ||
-                    args[i].equals("-vlax") ||
-                    args[i].startsWith("-xsd:") ||
-                    args[i].startsWith("-xsdversion:") ||
-                    args[i].equals("-p")) {
-                schemaAware = true;
-                break;
-            }
-        }
-
-        try {
-            setFactoryConfiguration(schemaAware, null);
-        } catch (Exception err) {
-            err.printStackTrace();
-            quit(err.getMessage(), 2);
-        }
-        config = factory.getConfiguration();
-        config.setVersionWarning(true);  // unless suppressed by command line options
-        schemaAware = config.isSchemaAware(Configuration.XSLT);
-
-        // Check the command-line arguments.
-
-        try {
-            int i = 0;
-            while (true) {
-                if (i >= args.length) {
-                    break;
-                }
-
-                if (args[i].charAt(0) == '-') {
-                    String option;
-                    String value = null;
-                    int colon = args[i].indexOf(':');
-                    if (colon > 0 && colon < args[i].length() - 1) {
-                        option = args[i].substring(1, colon);
-                        value = args[i].substring(colon+1);
-                    } else {
-                        option = args[i].substring(1);
-                    }
-                    if (option.equals("a")) {
-                        useAssociatedStylesheet = true;
-                        i++;
-                    } else if (option.equals("c")) {
-                        precompiled = true;
-                        if (value != null) {
-                            styleFileName = value;
-                        }
-                        i++;
-                    } else if (option.equals("cr")) {
-                        i++;
-                        if (value == null) {
-                            if (args.length < i + 2) {
-                                badUsage(command, "No resolver after -cr");
-                            }
-                            value = args[i++];
-                        }
-                        Object resolver = config.getInstance(value, null);
-                        factory.setAttribute(FeatureKeys.COLLECTION_URI_RESOLVER, resolver);
-                    } else if (option.equals("ds")) {
-                        factory.setAttribute(FeatureKeys.TREE_MODEL,
-                                new Integer(Builder.LINKED_TREE));
-                        i++;
-                    } else if (option.equals("dt")) {
-                        factory.setAttribute(FeatureKeys.TREE_MODEL,
-                                new Integer(Builder.TINY_TREE));
-                        i++;
-                    } else if (option.equals("dtd")) {
-                        if (!("on".equals(value) || "off".equals(value))) {
-                            badUsage(command, "-dtd option must be -dtd:on or -dtd:off");
-                        }
-                        factory.setAttribute(FeatureKeys.DTD_VALIDATION,
-                                    Boolean.valueOf("on".equals(value)));
-                        i++;
-                    } else if (option.equals("expand")) {
-                        if (!("on".equals(value) || "off".equals(value))) {
-                            badUsage(command, "-expand option must be 'on' or 'off'");
-                        }
-                        factory.setAttribute(FeatureKeys.EXPAND_ATTRIBUTE_DEFAULTS,
-                                    Boolean.valueOf("on".equals(value)));
-                        i++;                        
-                    } else if (option.equals("explain")) {
-                        explain = true;
-                        explainOutputFileName = value; // may be omitted/null
-                        factory.setAttribute(FeatureKeys.TRACE_OPTIMIZER_DECISIONS, Boolean.TRUE);
-                        i++;
-                    } else if (option.equals("ext")) {
-                        if (!("on".equals(value) || "off".equals(value))) {
-                            badUsage(command, "-ext option must be -ext:on or -ext:off");
-                        }
-                        factory.setAttribute(FeatureKeys.ALLOW_EXTERNAL_FUNCTIONS,
-                                    Boolean.valueOf("on".equals(value)));
-                        i++;
-                    } else if (option.equals("im")) {
-                        i++;
-                        if (value == null) {
-                            if (args.length < i + 2) {
-                                badUsage(command, "No initial mode after -im");
-                            }
-                            value = args[i++];
-                        }
-                        initialMode = value;
-                    } else if (option.equals("it")) {
-                        i++;
-                        if (value == null) {
-                            if (args.length < i + 2) {
-                                badUsage(command, "No initial template after -it");
-                            }
-                            value = args[i++];
-                        }
-                        initialTemplate = value;
-                    } else if (option.equals("l")) {
-                        if (!(value==null || "on".equals(value) || "off".equals(value))) {
-                            badUsage(command, "-l option must be -l:on or -l:off");
-                        }
-                        factory.setAttribute(FeatureKeys.LINE_NUMBERING,
-                                Boolean.valueOf(!"off".equals(value)));
-                        i++;
-                    } else if (option.equals("m")) {
-                        i++;
-                        if (value == null) {
-                            if (args.length < i + 2) {
-                                badUsage(command, "No message receiver class after -m");
-                            }
-                            value = args[i++];
-                        }
-                        factory.setAttribute(FeatureKeys.MESSAGE_EMITTER_CLASS, value);
-                    } else if (option.equals("noext")) {
-                        i++;
-                        factory.setAttribute(FeatureKeys.ALLOW_EXTERNAL_FUNCTIONS,
-                                Boolean.valueOf(false));
-                    } else if (option.equals("novw")) {
-                        factory.setAttribute(FeatureKeys.VERSION_WARNING,
-                                Boolean.valueOf(false));
-                        i++;
-                    } else if (option.equals("o")) {
-                        i++;
-                        if (value == null) {
-                            if (args.length < i + 2) {
-                                badUsage(command, "No output file name after -o");
-                            }
-                            value = args[i++];
-                        }
-                        outputFileName = value;
-
-                    } else if (option.equals("or")) {
-                        i++;
-                        if (value == null) {
-                            if (args.length < i + 2) {
-                                badUsage(command, "No output resolver class after -or");
-                            }
-                            value = args[i++];
-                        }
-                        String orclass = value;
-                        Object resolver = config.getInstance(orclass, null);
-                        factory.setAttribute(FeatureKeys.OUTPUT_URI_RESOLVER, resolver);
-
-                    } else if (option.equals("outval")) {
-                        if (schemaAware) {
-                            if (!(value==null || "recover".equals(value) || "fatal".equals(value))) {
-                                badUsage(command, "-outval option must be 'recover' or 'fatal'");
-                            }
-                            factory.setAttribute(FeatureKeys.VALIDATION_WARNINGS,
-                                    Boolean.valueOf("recover".equals(value)));
-                        } else {
-                            quit("The -outval option requires a schema-aware processor", 2);
-                        }
-                        i++;
-                    } else if (option.equals("p")) {
-                        i++;
-                        if (!(value==null || "on".equals(value) || "off".equals(value))) {
-                            badUsage(command, "-p option must be -p:on or -p:off");
-                        }
-                        if (!"off".equals(value)) {
-                            //setPOption(config);
-                            config.setParameterizedURIResolver();
-                            useURLs = true;
-                        }
-                    } else if (option.equals("r")) {
-                        i++;
-                        if (value == null) {
-                            if (args.length < i + 2) {
-                                badUsage(command, "No URIesolver class after -r");
-                            }
-                            value = args[i++];
-                        }
-                        factory.setURIResolver(config.makeURIResolver(value));
-                    } else if (option.equals("repeat")) {
-                        i++;
-                        if (value == null) {
-                            badUsage(command, "No number after -repeat");
-                        } else {
-                            try {
-                                repeat = Integer.parseInt(value);
-                            } catch (NumberFormatException err) {
-                                badUsage(command, "Bad number after -repeat");
-                            }
-                        }
-                    } else if (option.equals("s")) {
-                        i++;
-                        if (value == null) {
-                            if (args.length < i + 2) {
-                                badUsage(command, "No source file name after -s");
-                            }
-                            value = args[i++];
-                        }
-                        sourceFileName = value;
-                    } else if (option.equals("sa")) {
-                        // already handled
-                        i++;
-                    } else if (option.equals("snone")) {
-                        factory.setAttribute(FeatureKeys.STRIP_WHITESPACE, "none");
-                        i++;
-                    } else if (option.equals("sall")) {
-                        factory.setAttribute(FeatureKeys.STRIP_WHITESPACE, "all");
-                        i++;
-                    } else if (option.equals("signorable")) {
-                        factory.setAttribute(FeatureKeys.STRIP_WHITESPACE, "ignorable");
-                        i++;
-                    } else if (option.equals("strip")) {
-                        if ("none".equals(value) || "all".equals(value) || "ignorable".equals(value)) {
-                            factory.setAttribute(FeatureKeys.STRIP_WHITESPACE, value);
-                            i++;
-                        } else {
-                            badUsage(command, "-strip must be none, all, or ignorable");
-                        }
-                    } else if (option.equals("t")) {
-                        if (!showTime) {
-                            // don't do it twice if the option appears twice
-                            System.err.println(config.getProductTitle());
-                            System.err.println(Configuration.getPlatform().getPlatformVersion());
-                            factory.setAttribute(FeatureKeys.TIMING, Boolean.valueOf(true));
-                            showTime = true;
-                        }
-                        i++;
-                    } else if (option.equals("T")) {
-                        i++;
-                        TraceListener traceListener;
-                        if (value == null) {
-                            traceListener = new net.sf.saxon.trace.XSLTTraceListener();
-                        } else {
-                            traceListener = config.makeTraceListener(value);
-                        }
-                        factory.setAttribute(FeatureKeys.TRACE_LISTENER, traceListener);
-                        factory.setAttribute(FeatureKeys.LINE_NUMBERING, Boolean.TRUE);
-
-                    } else if (option.equals("TJ")) {
-                        i++;
-                        factory.setAttribute(FeatureKeys.TRACE_EXTERNAL_FUNCTIONS,
-                                Boolean.TRUE);
-                    } else if (option.equals("TL")) {
-                        i++;
-                        if (args.length < i + 2) {
-                            badUsage(command, "No TraceListener class");
-                        }
-                        TraceListener traceListener = config.makeTraceListener(args[i++]);
-                        factory.setAttribute(FeatureKeys.TRACE_LISTENER,
-                                traceListener);
-                        factory.setAttribute(FeatureKeys.LINE_NUMBERING,
-                                Boolean.TRUE);
-                    } else if (option.equals("TP")) {
-                        i++;
-                        TraceListener traceListener = new net.sf.saxon.trace.TimedTraceListener();
-                        factory.setAttribute(FeatureKeys.TRACE_LISTENER,
-                                traceListener);
-                        factory.setAttribute(FeatureKeys.LINE_NUMBERING,
-                                Boolean.TRUE);
-                    } else if (option.equals("traceout")) {
-                        i++;
-                        if (value.equals("#err")) {
-                            // no action, this is the default
-                        } else if (value.equals("#out")) {
-                            traceDestination = System.out;
-                        } else if (value.equals("#null")) {
-                            traceDestination = null;
-                        } else {
-                            traceDestination = new PrintStream(new FileOutputStream(new File(value)));
-                            closeTraceDestination = true;
-                        }
-
-                    } else if (option.equals("tree")) {
-                        if ("linked".equals(value)) {
-                            factory.setAttribute(FeatureKeys.TREE_MODEL,
-                                    new Integer(Builder.LINKED_TREE));
-                        } else if ("tiny".equals(value)) {
-                            factory.setAttribute(FeatureKeys.TREE_MODEL,
-                                new Integer(Builder.TINY_TREE));
-                        } else {
-                            badUsage(command, "-tree option must be 'linked' or 'tiny'");
-                        }
-                        i++;
-                    } else if (option.equals("u")) {
-                        useURLs = true;
-                        i++;
-                    } else if (option.equals("v")) {
-                        factory.setAttribute(FeatureKeys.DTD_VALIDATION,
-                                Boolean.valueOf(true));
-                        dtdValidation = true;
-                        i++;
-                    } else if (option.equals("val")) {
-                        if (!schemaAware) {
-                            badUsage(command, "The -val option requires a schema-aware processor");
-                        } else if (value==null || "strict".equals(value)) {
-                                factory.setAttribute(FeatureKeys.SCHEMA_VALIDATION,
-                                    new Integer(Validation.STRICT));
-                        } else if ("lax".equals(value)) {
-                            factory.setAttribute(FeatureKeys.SCHEMA_VALIDATION,
-                                new Integer(Validation.LAX));
-                        } else {
-                            badUsage(command, "-val option must be 'strict' or 'lax'");
-                        }
-                        i++;
-                    } else if (option.equals("vlax")) {
-                        if (schemaAware) {
-                            factory.setAttribute(FeatureKeys.SCHEMA_VALIDATION,
-                                    new Integer(Validation.LAX));
-                        } else {
-                            quit("The -vlax option requires a schema-aware processor", 2);
-                        }
-                        i++;
-                    } else if (option.equals("versionmsg")) {
-                        if (!("on".equals(value) || "off".equals(value))) {
-                            badUsage(command, "-versionmsg option must be -versionmsg:on or -versionmsg:off");
-                        }
-                        factory.setAttribute(FeatureKeys.VERSION_WARNING,
-                                    Boolean.valueOf("on".equals(value)));
-                        i++;
-                    } else if (option.equals("vw")) {
-                        if (schemaAware) {
-                            factory.setAttribute(FeatureKeys.VALIDATION_WARNINGS,
-                                    Boolean.valueOf(true));
-                        } else {
-                            quit("The -vw option requires a schema-aware processor", 2);
-                        }
-                        i++;
-                    } else if (option.equals("warnings")) {
-                        if ("silent".equals(value)) {
-                            factory.setAttribute(FeatureKeys.RECOVERY_POLICY,
-                                new Integer(Configuration.RECOVER_SILENTLY));
-                        } else if ("recover".equals(value)) {
-                            factory.setAttribute(FeatureKeys.RECOVERY_POLICY,
-                                new Integer(Configuration.RECOVER_WITH_WARNINGS));
-                        } else if ("fatal".equals(value)) {
-                            factory.setAttribute(FeatureKeys.RECOVERY_POLICY,
-                                new Integer(Configuration.DO_NOT_RECOVER));
-                        }
-                        i++;
-                    } else if (option.equals("w0")) {
-                        i++;
-                        factory.setAttribute(FeatureKeys.RECOVERY_POLICY,
-                                new Integer(Configuration.RECOVER_SILENTLY));
-                    } else if (option.equals("w1")) {
-                        i++;
-                        factory.setAttribute(FeatureKeys.RECOVERY_POLICY,
-                                new Integer(Configuration.RECOVER_WITH_WARNINGS));
-                    } else if (option.equals("w2")) {
-                        i++;
-                        factory.setAttribute(FeatureKeys.RECOVERY_POLICY,
-                                new Integer(Configuration.DO_NOT_RECOVER));
-
-                    } else if (option.equals("x")) {
-                        i++;
-                        if (value == null) {
-                            if (args.length < i + 2) {
-                                badUsage(command, "No source parser class after -x");
-                            }
-                            value = args[i++];
-                        }
-                        sourceParserName = value;
-                        factory.setAttribute(FeatureKeys.SOURCE_PARSER_CLASS, sourceParserName);
-                    } else if (option.equals("xi")) {
-                        if (!(value==null || "on".equals(value) || "off".equals(value))) {
-                            badUsage(command, "-xi option must be -xi:on or -xi:off");
-                        }
-                        if (!"off".equals(value)) {
-                            factory.setAttribute(FeatureKeys.XINCLUDE, Boolean.TRUE);
-                        }
-                        i++;
-                   } else if (option.equals("xmlversion")) {    // XML 1.1
-                        i++;
-                        if (!("1.0".equals(value) | "1.1".equals(value))) {
-                            badUsage(command, "-xmlversion must be 1.0 or 1.1");
-                        }
-                        factory.setAttribute(FeatureKeys.XML_VERSION, value);
-                    } else if (option.equals("xsd")) {
-                        i++;
-                        additionalSchemas = value;
-                    } else if (option.equals("xsdversion")) {    // XSD 1.1
-                        i++;
-                        if (!("1.0".equals(value) | "1.1".equals(value))) {
-                            badUsage(command, "-xsdversion must be 1.0 or 1.1");
-                        }
-                        config.setConfigurationProperty(FeatureKeys.XSD_VERSION, value);
-                    } else if (option.equals("xsiloc")) {
-                        i++;
-                        if ("off".equals(value)) {
-                            config.setConfigurationProperty(FeatureKeys.USE_XSI_SCHEMA_LOCATION, Boolean.FALSE);
-                        } else if ("on".equals(value)) {
-                            config.setConfigurationProperty(FeatureKeys.USE_XSI_SCHEMA_LOCATION, Boolean.TRUE);
-                        } else {
-                            badUsage(value, "format: -xsiloc:(on|off)");
-                        }
-                    } else if (option.equals("xsl")) {
-                        i++;
-                        styleFileName = value;
-                    } else if (option.equals("y")) {
-                        i++;
-                        if (value == null) {
-                            if (args.length < i + 2) {
-                                badUsage(command, "No stylesheet parser class after -y");
-                            }
-                            value = args[i++];
-                        }
-                        styleParserName = value;
-                        factory.setAttribute(FeatureKeys.STYLE_PARSER_CLASS, value);
-
-                    } else if (option.equals("1.1")) {    // XML 1.1
-                        i++;
-                        factory.setAttribute(FeatureKeys.XML_VERSION, "1.1");
-
-                    } else if (args[i].equals("-?")) {
-                        badUsage(command, "");
-                    } else if (args[i].equals("-")) {
-                        break;
-                        // this means take the source from standard input
-                    } else {
-                        badUsage(command, "Unknown option " + args[i]);
-                    }
-                } else {
-                    break;
-                }
-            }
-
-            if (initialTemplate != null && useAssociatedStylesheet) {
-                badUsage(command, "-it and -a options cannot be used together");
-            }
-
-            if (initialTemplate == null && sourceFileName == null) {
-                if (args.length < i + 1) {
-                    badUsage(command, "No source file name");
-                }
-                sourceFileName = args[i++];
-            }
-
-            if (!useAssociatedStylesheet && styleFileName == null) {
-                if (args.length < i + 1) {
-                    badUsage(command, "No stylesheet file name");
-                }
-                styleFileName = args[i++];
-            }
-
-            for (int p = i; p < args.length; p++) {
-                String arg = args[p];
-                int eq = arg.indexOf("=");
-                if (eq < 1 || eq >= arg.length()) {
-                    badUsage(command, "Bad param=value pair on command line: " + arg);
-                }
-                parameterList.add(arg);
-            }
-
-            config.displayLicenseMessage();
-
-            if (additionalSchemas != null) {
-                Query.loadAdditionalSchemas(config, additionalSchemas);
-            }
-
-            List sources = null;
-            if (sourceFileName != null) {
-                boolean useSAXSource = sourceParserName != null || dtdValidation;
-                Object loaded = loadDocuments(sourceFileName, useURLs, config, useSAXSource);
-                if (loaded instanceof List) {
-                    wholeDirectory = true;
-                    sources = (List)loaded;
-                } else {
-                    wholeDirectory = false;
-                    sources = new ArrayList(1);
-                    sources.add(loaded);
-                }
-                sources = preprocess(sources);
-                if (wholeDirectory) {
-                    if (outputFileName == null) {
-                        quit("To process a directory, -o must be specified", 2);
-                    } else if (outputFileName.equals(sourceFileName)) {
-                        quit("Output directory must be different from input", 2);
-                    } else {
-                        outputFile = new File(outputFileName);
-                        if (!outputFile.isDirectory()) {
-                            quit("Input is a directory, but output is not", 2);
-                        }
-                    }
-                }
-            }
-
-            if (outputFileName != null && !wholeDirectory) {
-                outputFile = new File(outputFileName);
-                if (outputFile.isDirectory()) {
-                    quit("Output is a directory, but input is not", 2);
-                }
-            }
-
-            if (useAssociatedStylesheet) {
-                if (wholeDirectory) {
-                    processDirectoryAssoc(sources, outputFile, parameterList,
-                            initialMode, traceDestination);
-                } else {
-                    processFileAssoc((Source)sources.get(0), null, outputFile, parameterList,
-                            initialMode, traceDestination);
-                }
-            } else {
-
-                long startTime = (new Date()).getTime();
-
-                PreparedStylesheet sheet = null;
-
-                if (precompiled) {
-                    try {
-                        sheet = PreparedStylesheet.loadCompiledStylesheet(config, styleFileName);
-                        if (showTime) {
-                            long endTime = (new Date()).getTime();
-                            System.err.println("Stylesheet loading time: " + (endTime - startTime) + " milliseconds");
-                        }
-                    } catch (Exception err) {
-                        err.printStackTrace();
-                    }
-                } else {
-                    Source styleSource;
-                    XMLReader styleParser = null;
-                    if (useURLs || styleFileName.startsWith("http:")
-                            || styleFileName.startsWith("file:")) {
-                        styleSource = config.getURIResolver().resolve(styleFileName, null);
-                        if (styleSource == null) {
-                            styleSource = config.getSystemURIResolver().resolve(styleFileName, null);
-                        }
-                    } else if (styleFileName.equals("-")) {
-                        // take input from stdin
-                        if (styleParserName == null) {
-                            styleSource = new StreamSource(System.in);
-                        } else if (Configuration.getPlatform().isJava()) {
-                            styleParser = config.getStyleParser();
-                            styleSource = new SAXSource(styleParser, new InputSource(System.in));
-                        } else {
-                            styleSource = new StreamSource(System.in);
-                        }
-                    } else {
-                        File sheetFile = new File(styleFileName);
-                        if (!sheetFile.exists()) {
-                            quit("Stylesheet file " + sheetFile + " does not exist", 2);
-                        }
-                        if (styleParserName == null) {
-                            styleSource = new StreamSource(sheetFile.toURI().toString());
-                        } else {
-                            InputSource eis = new InputSource(sheetFile.toURI().toString());
-                            styleParser = config.getStyleParser();
-                            styleSource = new SAXSource(styleParser, eis);
-                        }
-                    }
-
-                    if (styleSource == null) {
-                        quit("URIResolver for stylesheet file must return a Source", 2);
-                    }
-
-                    sheet = (PreparedStylesheet)factory.newTemplates(styleSource);
-                    if (styleParser != null) {
-                        config.reuseStyleParser(styleParser);
-                        // pointless, because the Configuration won't be used again; but we want to set a good example
-                    }
-                    if (showTime) {
-                        long endTime = now();
-                        System.err.println("Stylesheet compilation time: " + (endTime - startTime) + " milliseconds");
-                    }
-
-                    if (explain) {
-                        OutputStream explainOutput;
-                        if (explainOutputFileName == null) {
-                            explainOutput = System.err;
-                        } else {
-                            explainOutput = new FileOutputStream(new File(explainOutputFileName));
-                        }
-                        Properties props = new Properties();
-                        props.setProperty(OutputKeys.METHOD, "xml");
-                        props.setProperty(OutputKeys.INDENT, "yes");
-                        props.setProperty(SaxonOutputKeys.INDENT_SPACES, "2");
-                        Receiver diag = config.getSerializerFactory().getReceiver(
-                                new StreamResult(explainOutput),
-                                config.makePipelineConfiguration(),
-                                props);
-                        ExpressionPresenter expressionPresenter = new ExpressionPresenter(config, diag);
-                        sheet.explain(expressionPresenter);
-                        expressionPresenter.close();
-                    }
-
-                }
-
-                if (wholeDirectory) {
-                    processDirectory(sources, sheet, outputFile,
-                            parameterList, initialTemplate, initialMode, traceDestination);
-                } else {
-                    Source source = (sources == null ? null : (Source)sources.get(0));
-                    processFile(source, sheet, outputFile,
-                            parameterList, initialTemplate, initialMode, traceDestination);
-                }
-                if (closeTraceDestination) {
-                    traceDestination.close();
-                }
-            }
-        } catch (TerminationException err) {
-            quit(err.getMessage(), 1);
-        } catch (TransformerConfigurationException err) {
-            //err.printStackTrace();
-            quit(err.getMessage(), 2);
-        } catch (TransformerException err) {
-            //err.printStackTrace();
-            quit("Transformation failed: " + err.getMessage(), 2);
-        } catch (TransformerFactoryConfigurationError err) {
-            //err.printStackTrace();
-            quit("Transformation failed: " + err.getMessage(), 2);
-        } catch (Exception err2) {
-            err2.printStackTrace();
-            quit("Fatal error during transformation: " + err2.getClass().getName() + ": " + 
-                    (err2.getMessage() == null ? " (no message)" : err2.getMessage()), 2);
-        }
-
-
-        //System.exit(0);
-    }
+//    public void doTransform(String args[], String command) {
+//
+//
+//        String sourceFileName = null;
+//        String styleFileName = null;
+//        File outputFile = null;
+//        ArrayList parameterList = new ArrayList(20);
+//        String outputFileName = null;
+//        String initialMode = null;
+//        String initialTemplate = null;
+//        boolean useAssociatedStylesheet = false;
+//        boolean wholeDirectory = false;
+//        boolean precompiled = false;
+//        boolean dtdValidation = false;
+//        String styleParserName = null;
+//        boolean explain = false;
+//        String explainOutputFileName = null;
+//        String additionalSchemas = null;
+//        PrintStream traceDestination = System.err;
+//        boolean closeTraceDestination = false;
+//
+//        boolean schemaAware = false;
+//        for (int i=0; i<args.length; i++) {
+//            if (args[i].equals("-sa") ||
+//                    args[i].startsWith("-sa:") ||
+//                    args[i].startsWith("-val:") ||
+//                    args[i].equals("-val") ||
+//                    args[i].equals("-vlax") ||
+//                    args[i].startsWith("-xsd:") ||
+//                    args[i].startsWith("-xsdversion:") ||
+//                    args[i].equals("-p")) {
+//                schemaAware = true;
+//                break;
+//            }
+//        }
+//
+//        try {
+//            setFactoryConfiguration(schemaAware, null);
+//        } catch (Exception err) {
+//            err.printStackTrace();
+//            quit(err.getMessage(), 2);
+//        }
+//        config = factory.getConfiguration();
+//        config.setVersionWarning(true);  // unless suppressed by command line options
+//        schemaAware = config.isSchemaAware(Configuration.XSLT);
+//
+//        // Check the command-line arguments.
+//
+//        try {
+//            int i = 0;
+//            while (true) {
+//                if (i >= args.length) {
+//                    break;
+//                }
+//
+//                if (args[i].charAt(0) == '-') {
+//                    String option;
+//                    String value = null;
+//                    int colon = args[i].indexOf(':');
+//                    if (colon > 0 && colon < args[i].length() - 1) {
+//                        option = args[i].substring(1, colon);
+//                        value = args[i].substring(colon+1);
+//                    } else {
+//                        option = args[i].substring(1);
+//                    }
+//                    if (option.equals("a")) {
+//                        useAssociatedStylesheet = true;
+//                        i++;
+//                    } else if (option.equals("c")) {
+//                        precompiled = true;
+//                        if (value != null) {
+//                            styleFileName = value;
+//                        }
+//                        i++;
+//                    } else if (option.equals("cr")) {
+//                        i++;
+//                        if (value == null) {
+//                            if (args.length < i + 2) {
+//                                badUsage(command, "No resolver after -cr");
+//                            }
+//                            value = args[i++];
+//                        }
+//                        Object resolver = config.getInstance(value, null);
+//                        factory.setAttribute(FeatureKeys.COLLECTION_URI_RESOLVER, resolver);
+//                    } else if (option.equals("ds")) {
+//                        factory.setAttribute(FeatureKeys.TREE_MODEL,
+//                                new Integer(Builder.LINKED_TREE));
+//                        i++;
+//                    } else if (option.equals("dt")) {
+//                        factory.setAttribute(FeatureKeys.TREE_MODEL,
+//                                new Integer(Builder.TINY_TREE));
+//                        i++;
+//                    } else if (option.equals("dtd")) {
+//                        if (!("on".equals(value) || "off".equals(value))) {
+//                            badUsage(command, "-dtd option must be -dtd:on or -dtd:off");
+//                        }
+//                        factory.setAttribute(FeatureKeys.DTD_VALIDATION,
+//                                    Boolean.valueOf("on".equals(value)));
+//                        i++;
+//                    } else if (option.equals("expand")) {
+//                        if (!("on".equals(value) || "off".equals(value))) {
+//                            badUsage(command, "-expand option must be 'on' or 'off'");
+//                        }
+//                        factory.setAttribute(FeatureKeys.EXPAND_ATTRIBUTE_DEFAULTS,
+//                                    Boolean.valueOf("on".equals(value)));
+//                        i++;
+//                    } else if (option.equals("explain")) {
+//                        explain = true;
+//                        explainOutputFileName = value; // may be omitted/null
+//                        factory.setAttribute(FeatureKeys.TRACE_OPTIMIZER_DECISIONS, Boolean.TRUE);
+//                        i++;
+//                    } else if (option.equals("ext")) {
+//                        if (!("on".equals(value) || "off".equals(value))) {
+//                            badUsage(command, "-ext option must be -ext:on or -ext:off");
+//                        }
+//                        factory.setAttribute(FeatureKeys.ALLOW_EXTERNAL_FUNCTIONS,
+//                                    Boolean.valueOf("on".equals(value)));
+//                        i++;
+//                    } else if (option.equals("im")) {
+//                        i++;
+//                        if (value == null) {
+//                            if (args.length < i + 2) {
+//                                badUsage(command, "No initial mode after -im");
+//                            }
+//                            value = args[i++];
+//                        }
+//                        initialMode = value;
+//                    } else if (option.equals("it")) {
+//                        i++;
+//                        if (value == null) {
+//                            if (args.length < i + 2) {
+//                                badUsage(command, "No initial template after -it");
+//                            }
+//                            value = args[i++];
+//                        }
+//                        initialTemplate = value;
+//                    } else if (option.equals("l")) {
+//                        if (!(value==null || "on".equals(value) || "off".equals(value))) {
+//                            badUsage(command, "-l option must be -l:on or -l:off");
+//                        }
+//                        factory.setAttribute(FeatureKeys.LINE_NUMBERING,
+//                                Boolean.valueOf(!"off".equals(value)));
+//                        i++;
+//                    } else if (option.equals("m")) {
+//                        i++;
+//                        if (value == null) {
+//                            if (args.length < i + 2) {
+//                                badUsage(command, "No message receiver class after -m");
+//                            }
+//                            value = args[i++];
+//                        }
+//                        factory.setAttribute(FeatureKeys.MESSAGE_EMITTER_CLASS, value);
+//                    } else if (option.equals("noext")) {
+//                        i++;
+//                        factory.setAttribute(FeatureKeys.ALLOW_EXTERNAL_FUNCTIONS,
+//                                Boolean.valueOf(false));
+//                    } else if (option.equals("novw")) {
+//                        factory.setAttribute(FeatureKeys.VERSION_WARNING,
+//                                Boolean.valueOf(false));
+//                        i++;
+//                    } else if (option.equals("o")) {
+//                        i++;
+//                        if (value == null) {
+//                            if (args.length < i + 2) {
+//                                badUsage(command, "No output file name after -o");
+//                            }
+//                            value = args[i++];
+//                        }
+//                        outputFileName = value;
+//
+//                    } else if (option.equals("or")) {
+//                        i++;
+//                        if (value == null) {
+//                            if (args.length < i + 2) {
+//                                badUsage(command, "No output resolver class after -or");
+//                            }
+//                            value = args[i++];
+//                        }
+//                        String orclass = value;
+//                        Object resolver = config.getInstance(orclass, null);
+//                        factory.setAttribute(FeatureKeys.OUTPUT_URI_RESOLVER, resolver);
+//
+//                    } else if (option.equals("outval")) {
+//                        if (schemaAware) {
+//                            if (!(value==null || "recover".equals(value) || "fatal".equals(value))) {
+//                                badUsage(command, "-outval option must be 'recover' or 'fatal'");
+//                            }
+//                            factory.setAttribute(FeatureKeys.VALIDATION_WARNINGS,
+//                                    Boolean.valueOf("recover".equals(value)));
+//                        } else {
+//                            quit("The -outval option requires a schema-aware processor", 2);
+//                        }
+//                        i++;
+//                    } else if (option.equals("p")) {
+//                        i++;
+//                        if (!(value==null || "on".equals(value) || "off".equals(value))) {
+//                            badUsage(command, "-p option must be -p:on or -p:off");
+//                        }
+//                        if (!"off".equals(value)) {
+//                            //setPOption(config);
+//                            config.setParameterizedURIResolver();
+//                            useURLs = true;
+//                        }
+//                    } else if (option.equals("r")) {
+//                        i++;
+//                        if (value == null) {
+//                            if (args.length < i + 2) {
+//                                badUsage(command, "No URIesolver class after -r");
+//                            }
+//                            value = args[i++];
+//                        }
+//                        factory.setURIResolver(config.makeURIResolver(value));
+//                    } else if (option.equals("repeat")) {
+//                        i++;
+//                        if (value == null) {
+//                            badUsage(command, "No number after -repeat");
+//                        } else {
+//                            try {
+//                                repeat = Integer.parseInt(value);
+//                            } catch (NumberFormatException err) {
+//                                badUsage(command, "Bad number after -repeat");
+//                            }
+//                        }
+//                    } else if (option.equals("s")) {
+//                        i++;
+//                        if (value == null) {
+//                            if (args.length < i + 2) {
+//                                badUsage(command, "No source file name after -s");
+//                            }
+//                            value = args[i++];
+//                        }
+//                        sourceFileName = value;
+//                    } else if (option.equals("sa")) {
+//                        // already handled
+//                        i++;
+//                    } else if (option.equals("snone")) {
+//                        factory.setAttribute(FeatureKeys.STRIP_WHITESPACE, "none");
+//                        i++;
+//                    } else if (option.equals("sall")) {
+//                        factory.setAttribute(FeatureKeys.STRIP_WHITESPACE, "all");
+//                        i++;
+//                    } else if (option.equals("signorable")) {
+//                        factory.setAttribute(FeatureKeys.STRIP_WHITESPACE, "ignorable");
+//                        i++;
+//                    } else if (option.equals("strip")) {
+//                        if ("none".equals(value) || "all".equals(value) || "ignorable".equals(value)) {
+//                            factory.setAttribute(FeatureKeys.STRIP_WHITESPACE, value);
+//                            i++;
+//                        } else {
+//                            badUsage(command, "-strip must be none, all, or ignorable");
+//                        }
+//                    } else if (option.equals("t")) {
+//                        if (!showTime) {
+//                            // don't do it twice if the option appears twice
+//                            System.err.println(config.getProductTitle());
+//                            System.err.println(Configuration.getPlatform().getPlatformVersion());
+//                            factory.setAttribute(FeatureKeys.TIMING, Boolean.valueOf(true));
+//                            showTime = true;
+//                        }
+//                        i++;
+//                    } else if (option.equals("T")) {
+//                        i++;
+//                        TraceListener traceListener;
+//                        if (value == null) {
+//                            traceListener = new net.sf.saxon.trace.XSLTTraceListener();
+//                        } else {
+//                            traceListener = config.makeTraceListener(value);
+//                        }
+//                        factory.setAttribute(FeatureKeys.TRACE_LISTENER, traceListener);
+//                        factory.setAttribute(FeatureKeys.LINE_NUMBERING, Boolean.TRUE);
+//
+//                    } else if (option.equals("TJ")) {
+//                        i++;
+//                        factory.setAttribute(FeatureKeys.TRACE_EXTERNAL_FUNCTIONS,
+//                                Boolean.TRUE);
+//                    } else if (option.equals("TL")) {
+//                        i++;
+//                        if (args.length < i + 2) {
+//                            badUsage(command, "No TraceListener class");
+//                        }
+//                        TraceListener traceListener = config.makeTraceListener(args[i++]);
+//                        factory.setAttribute(FeatureKeys.TRACE_LISTENER,
+//                                traceListener);
+//                        factory.setAttribute(FeatureKeys.LINE_NUMBERING,
+//                                Boolean.TRUE);
+//                    } else if (option.equals("TP")) {
+//                        i++;
+//                        TraceListener traceListener = new net.sf.saxon.trace.TimedTraceListener();
+//                        factory.setAttribute(FeatureKeys.TRACE_LISTENER,
+//                                traceListener);
+//                        factory.setAttribute(FeatureKeys.LINE_NUMBERING,
+//                                Boolean.TRUE);
+//                    } else if (option.equals("traceout")) {
+//                        i++;
+//                        if (value.equals("#err")) {
+//                            // no action, this is the default
+//                        } else if (value.equals("#out")) {
+//                            traceDestination = System.out;
+//                        } else if (value.equals("#null")) {
+//                            traceDestination = null;
+//                        } else {
+//                            traceDestination = new PrintStream(new FileOutputStream(new File(value)));
+//                            closeTraceDestination = true;
+//                        }
+//
+//                    } else if (option.equals("tree")) {
+//                        if ("linked".equals(value)) {
+//                            factory.setAttribute(FeatureKeys.TREE_MODEL,
+//                                    new Integer(Builder.LINKED_TREE));
+//                        } else if ("tiny".equals(value)) {
+//                            factory.setAttribute(FeatureKeys.TREE_MODEL,
+//                                new Integer(Builder.TINY_TREE));
+//                        } else {
+//                            badUsage(command, "-tree option must be 'linked' or 'tiny'");
+//                        }
+//                        i++;
+//                    } else if (option.equals("u")) {
+//                        useURLs = true;
+//                        i++;
+//                    } else if (option.equals("v")) {
+//                        factory.setAttribute(FeatureKeys.DTD_VALIDATION,
+//                                Boolean.valueOf(true));
+//                        dtdValidation = true;
+//                        i++;
+//                    } else if (option.equals("val")) {
+//                        if (!schemaAware) {
+//                            badUsage(command, "The -val option requires a schema-aware processor");
+//                        } else if (value==null || "strict".equals(value)) {
+//                                factory.setAttribute(FeatureKeys.SCHEMA_VALIDATION,
+//                                    new Integer(Validation.STRICT));
+//                        } else if ("lax".equals(value)) {
+//                            factory.setAttribute(FeatureKeys.SCHEMA_VALIDATION,
+//                                new Integer(Validation.LAX));
+//                        } else {
+//                            badUsage(command, "-val option must be 'strict' or 'lax'");
+//                        }
+//                        i++;
+//                    } else if (option.equals("vlax")) {
+//                        if (schemaAware) {
+//                            factory.setAttribute(FeatureKeys.SCHEMA_VALIDATION,
+//                                    new Integer(Validation.LAX));
+//                        } else {
+//                            quit("The -vlax option requires a schema-aware processor", 2);
+//                        }
+//                        i++;
+//                    } else if (option.equals("versionmsg")) {
+//                        if (!("on".equals(value) || "off".equals(value))) {
+//                            badUsage(command, "-versionmsg option must be -versionmsg:on or -versionmsg:off");
+//                        }
+//                        factory.setAttribute(FeatureKeys.VERSION_WARNING,
+//                                    Boolean.valueOf("on".equals(value)));
+//                        i++;
+//                    } else if (option.equals("vw")) {
+//                        if (schemaAware) {
+//                            factory.setAttribute(FeatureKeys.VALIDATION_WARNINGS,
+//                                    Boolean.valueOf(true));
+//                        } else {
+//                            quit("The -vw option requires a schema-aware processor", 2);
+//                        }
+//                        i++;
+//                    } else if (option.equals("warnings")) {
+//                        if ("silent".equals(value)) {
+//                            factory.setAttribute(FeatureKeys.RECOVERY_POLICY,
+//                                new Integer(Configuration.RECOVER_SILENTLY));
+//                        } else if ("recover".equals(value)) {
+//                            factory.setAttribute(FeatureKeys.RECOVERY_POLICY,
+//                                new Integer(Configuration.RECOVER_WITH_WARNINGS));
+//                        } else if ("fatal".equals(value)) {
+//                            factory.setAttribute(FeatureKeys.RECOVERY_POLICY,
+//                                new Integer(Configuration.DO_NOT_RECOVER));
+//                        }
+//                        i++;
+//                    } else if (option.equals("w0")) {
+//                        i++;
+//                        factory.setAttribute(FeatureKeys.RECOVERY_POLICY,
+//                                new Integer(Configuration.RECOVER_SILENTLY));
+//                    } else if (option.equals("w1")) {
+//                        i++;
+//                        factory.setAttribute(FeatureKeys.RECOVERY_POLICY,
+//                                new Integer(Configuration.RECOVER_WITH_WARNINGS));
+//                    } else if (option.equals("w2")) {
+//                        i++;
+//                        factory.setAttribute(FeatureKeys.RECOVERY_POLICY,
+//                                new Integer(Configuration.DO_NOT_RECOVER));
+//
+//                    } else if (option.equals("x")) {
+//                        i++;
+//                        if (value == null) {
+//                            if (args.length < i + 2) {
+//                                badUsage(command, "No source parser class after -x");
+//                            }
+//                            value = args[i++];
+//                        }
+//                        sourceParserName = value;
+//                        factory.setAttribute(FeatureKeys.SOURCE_PARSER_CLASS, sourceParserName);
+//                    } else if (option.equals("xi")) {
+//                        if (!(value==null || "on".equals(value) || "off".equals(value))) {
+//                            badUsage(command, "-xi option must be -xi:on or -xi:off");
+//                        }
+//                        if (!"off".equals(value)) {
+//                            factory.setAttribute(FeatureKeys.XINCLUDE, Boolean.TRUE);
+//                        }
+//                        i++;
+//                   } else if (option.equals("xmlversion")) {    // XML 1.1
+//                        i++;
+//                        if (!("1.0".equals(value) | "1.1".equals(value))) {
+//                            badUsage(command, "-xmlversion must be 1.0 or 1.1");
+//                        }
+//                        factory.setAttribute(FeatureKeys.XML_VERSION, value);
+//                    } else if (option.equals("xsd")) {
+//                        i++;
+//                        additionalSchemas = value;
+//                    } else if (option.equals("xsdversion")) {    // XSD 1.1
+//                        i++;
+//                        if (!("1.0".equals(value) | "1.1".equals(value))) {
+//                            badUsage(command, "-xsdversion must be 1.0 or 1.1");
+//                        }
+//                        config.setConfigurationProperty(FeatureKeys.XSD_VERSION, value);
+//                    } else if (option.equals("xsiloc")) {
+//                        i++;
+//                        if ("off".equals(value)) {
+//                            config.setConfigurationProperty(FeatureKeys.USE_XSI_SCHEMA_LOCATION, Boolean.FALSE);
+//                        } else if ("on".equals(value)) {
+//                            config.setConfigurationProperty(FeatureKeys.USE_XSI_SCHEMA_LOCATION, Boolean.TRUE);
+//                        } else {
+//                            badUsage(value, "format: -xsiloc:(on|off)");
+//                        }
+//                    } else if (option.equals("xsl")) {
+//                        i++;
+//                        styleFileName = value;
+//                    } else if (option.equals("y")) {
+//                        i++;
+//                        if (value == null) {
+//                            if (args.length < i + 2) {
+//                                badUsage(command, "No stylesheet parser class after -y");
+//                            }
+//                            value = args[i++];
+//                        }
+//                        styleParserName = value;
+//                        factory.setAttribute(FeatureKeys.STYLE_PARSER_CLASS, value);
+//
+//                    } else if (option.equals("1.1")) {    // XML 1.1
+//                        i++;
+//                        factory.setAttribute(FeatureKeys.XML_VERSION, "1.1");
+//
+//                    } else if (args[i].equals("-?")) {
+//                        badUsage(command, "");
+//                    } else if (args[i].equals("-")) {
+//                        break;
+//                        // this means take the source from standard input
+//                    } else {
+//                        badUsage(command, "Unknown option " + args[i]);
+//                    }
+//                } else {
+//                    break;
+//                }
+//            }
+//
+//            if (initialTemplate != null && useAssociatedStylesheet) {
+//                badUsage(command, "-it and -a options cannot be used together");
+//            }
+//
+//            if (initialTemplate == null && sourceFileName == null) {
+//                if (args.length < i + 1) {
+//                    badUsage(command, "No source file name");
+//                }
+//                sourceFileName = args[i++];
+//            }
+//
+//            if (!useAssociatedStylesheet && styleFileName == null) {
+//                if (args.length < i + 1) {
+//                    badUsage(command, "No stylesheet file name");
+//                }
+//                styleFileName = args[i++];
+//            }
+//
+//            for (int p = i; p < args.length; p++) {
+//                String arg = args[p];
+//                int eq = arg.indexOf("=");
+//                if (eq < 1 || eq >= arg.length()) {
+//                    badUsage(command, "Bad param=value pair on command line: " + arg);
+//                }
+//                parameterList.add(arg);
+//            }
+//
+//            config.displayLicenseMessage();
+//
+//            if (additionalSchemas != null) {
+//                Query.loadAdditionalSchemas(config, additionalSchemas);
+//            }
+//
+//            List sources = null;
+//            if (sourceFileName != null) {
+//                boolean useSAXSource = sourceParserName != null || dtdValidation;
+//                Object loaded = loadDocuments(sourceFileName, useURLs, config, useSAXSource);
+//                if (loaded instanceof List) {
+//                    wholeDirectory = true;
+//                    sources = (List)loaded;
+//                } else {
+//                    wholeDirectory = false;
+//                    sources = new ArrayList(1);
+//                    sources.add(loaded);
+//                }
+//                sources = preprocess(sources);
+//                if (wholeDirectory) {
+//                    if (outputFileName == null) {
+//                        quit("To process a directory, -o must be specified", 2);
+//                    } else if (outputFileName.equals(sourceFileName)) {
+//                        quit("Output directory must be different from input", 2);
+//                    } else {
+//                        outputFile = new File(outputFileName);
+//                        if (!outputFile.isDirectory()) {
+//                            quit("Input is a directory, but output is not", 2);
+//                        }
+//                    }
+//                }
+//            }
+//
+//            if (outputFileName != null && !wholeDirectory) {
+//                outputFile = new File(outputFileName);
+//                if (outputFile.isDirectory()) {
+//                    quit("Output is a directory, but input is not", 2);
+//                }
+//            }
+//
+//            if (useAssociatedStylesheet) {
+//                if (wholeDirectory) {
+//                    processDirectoryAssoc(sources, outputFile, parameterList,
+//                            initialMode, traceDestination);
+//                } else {
+//                    processFileAssoc((Source)sources.get(0), null, outputFile, parameterList,
+//                            initialMode, traceDestination);
+//                }
+//            } else {
+//
+//                long startTime = (new Date()).getTime();
+//
+//                PreparedStylesheet sheet = null;
+//
+//                if (precompiled) {
+//                    try {
+//                        sheet = PreparedStylesheet.loadCompiledStylesheet(config, styleFileName);
+//                        if (showTime) {
+//                            long endTime = (new Date()).getTime();
+//                            System.err.println("Stylesheet loading time: " + (endTime - startTime) + " milliseconds");
+//                        }
+//                    } catch (Exception err) {
+//                        err.printStackTrace();
+//                    }
+//                } else {
+//                    Source styleSource;
+//                    XMLReader styleParser = null;
+//                    if (useURLs || styleFileName.startsWith("http:")
+//                            || styleFileName.startsWith("file:")) {
+//                        styleSource = config.getURIResolver().resolve(styleFileName, null);
+//                        if (styleSource == null) {
+//                            styleSource = config.getSystemURIResolver().resolve(styleFileName, null);
+//                        }
+//                    } else if (styleFileName.equals("-")) {
+//                        // take input from stdin
+//                        if (styleParserName == null) {
+//                            styleSource = new StreamSource(System.in);
+//                        } else if (Configuration.getPlatform().isJava()) {
+//                            styleParser = config.getStyleParser();
+//                            styleSource = new SAXSource(styleParser, new InputSource(System.in));
+//                        } else {
+//                            styleSource = new StreamSource(System.in);
+//                        }
+//                    } else {
+//                        File sheetFile = new File(styleFileName);
+//                        if (!sheetFile.exists()) {
+//                            quit("Stylesheet file " + sheetFile + " does not exist", 2);
+//                        }
+//                        if (styleParserName == null) {
+//                            styleSource = new StreamSource(sheetFile.toURI().toString());
+//                        } else {
+//                            InputSource eis = new InputSource(sheetFile.toURI().toString());
+//                            styleParser = config.getStyleParser();
+//                            styleSource = new SAXSource(styleParser, eis);
+//                        }
+//                    }
+//
+//                    if (styleSource == null) {
+//                        quit("URIResolver for stylesheet file must return a Source", 2);
+//                    }
+//
+//                    sheet = (PreparedStylesheet)factory.newTemplates(styleSource);
+//                    if (styleParser != null) {
+//                        config.reuseStyleParser(styleParser);
+//                        // pointless, because the Configuration won't be used again; but we want to set a good example
+//                    }
+//                    if (showTime) {
+//                        long endTime = now();
+//                        System.err.println("Stylesheet compilation time: " + (endTime - startTime) + " milliseconds");
+//                    }
+//
+//                    if (explain) {
+//                        OutputStream explainOutput;
+//                        if (explainOutputFileName == null) {
+//                            explainOutput = System.err;
+//                        } else {
+//                            explainOutput = new FileOutputStream(new File(explainOutputFileName));
+//                        }
+//                        Properties props = new Properties();
+//                        props.setProperty(OutputKeys.METHOD, "xml");
+//                        props.setProperty(OutputKeys.INDENT, "yes");
+//                        props.setProperty(SaxonOutputKeys.INDENT_SPACES, "2");
+//                        Receiver diag = config.getSerializerFactory().getReceiver(
+//                                new StreamResult(explainOutput),
+//                                config.makePipelineConfiguration(),
+//                                props);
+//                        ExpressionPresenter expressionPresenter = new ExpressionPresenter(config, diag);
+//                        sheet.explain(expressionPresenter);
+//                        expressionPresenter.close();
+//                    }
+//
+//                }
+//
+//                if (wholeDirectory) {
+//                    processDirectory(sources, sheet, outputFile,
+//                            parameterList, initialTemplate, initialMode, traceDestination);
+//                } else {
+//                    Source source = (sources == null ? null : (Source)sources.get(0));
+//                    processFile(source, sheet, outputFile,
+//                            parameterList, initialTemplate, initialMode, traceDestination);
+//                }
+//                if (closeTraceDestination) {
+//                    traceDestination.close();
+//                }
+//            }
+//        } catch (TerminationException err) {
+//            quit(err.getMessage(), 1);
+//        } catch (TransformerConfigurationException err) {
+//            //err.printStackTrace();
+//            quit(err.getMessage(), 2);
+//        } catch (TransformerException err) {
+//            //err.printStackTrace();
+//            quit("Transformation failed: " + err.getMessage(), 2);
+//        } catch (TransformerFactoryConfigurationError err) {
+//            //err.printStackTrace();
+//            quit("Transformation failed: " + err.getMessage(), 2);
+//        } catch (Exception err2) {
+//            err2.printStackTrace();
+//            quit("Fatal error during transformation: " + err2.getClass().getName() + ": " +
+//                    (err2.getMessage() == null ? " (no message)" : err2.getMessage()), 2);
+//        }
+//
+//
+//        //System.exit(0);
+//    }
 
     /**
      * Preprocess the list of sources. This method exists so that it can be
