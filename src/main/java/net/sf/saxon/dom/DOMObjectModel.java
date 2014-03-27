@@ -13,13 +13,11 @@ import net.sf.saxon.trans.XPathException;
 import net.sf.saxon.type.ItemType;
 import net.sf.saxon.value.SequenceExtent;
 import net.sf.saxon.value.Value;
-import net.sf.saxon.xpath.XPathEvaluator;
 import org.w3c.dom.Document;
 import org.w3c.dom.DocumentFragment;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import javax.xml.namespace.NamespaceContext;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -31,7 +29,10 @@ import javax.xml.xpath.XPathConstants;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
 
 /**
  * This interface must be implemented by any third-party object model that can
@@ -476,32 +477,6 @@ public class DOMObjectModel implements ExternalObjectModel, Serializable {
         return ((DocumentWrapper)document).wrap((Node)node);
     }
 
-   /**
-     * Test showing a DOM NodeList returned by an extension function
-     */
-
-    public static void main (String[] args) throws Exception {
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        factory.setNamespaceAware(true);
-        DocumentBuilder db = factory.newDocumentBuilder();
-        Document doc = db.newDocument();
-        XPathEvaluator xpe = new XPathEvaluator();
-        String exp = "ext:sortArrayToNodeList(('fred', 'jane', 'anne', 'sue'))";
-        xpe.setNamespaceContext(new NamespaceContext() {
-            public String getNamespaceURI(String prefix) {
-                return (prefix.equals("ext") ? "java:net.sf.saxon.dom.DOMObjectModel" : null);
-            }
-            public String getPrefix(String namespaceURI) {
-                return null;
-            }
-            public Iterator getPrefixes(String namespaceURI) {
-                return null;
-            }
-        });
-        NodeList isList = (NodeList)xpe.evaluate(exp, doc, XPathConstants.NODESET);
-        System.err.println("length " + isList.getLength());
-    }
-
     /**
      * Sample extension function
      * @param source
@@ -525,7 +500,6 @@ public class DOMObjectModel implements ExternalObjectModel, Serializable {
         DOMNodeList resultSet = new DOMNodeList(list);
         return resultSet;
     }
-
 }
 
 
